@@ -1,0 +1,351 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Quantum Teleportation Design System - Dark Matter Theme */
+
+@layer base {
+  :root {
+    /* Core quantum dark matter palette - increased contrast */
+    --background: 240 20% 2%;
+    --foreground: 180 100% 98%;
+
+    /* Quantum accents */
+    --quantum-cyan: 187 100% 50%;
+    --quantum-magenta: 320 100% 62%;
+    --quantum-purple: 255 67% 68%;
+    --quantum-gold: 45 100% 60%;
+
+    /* UI surfaces with glassmorphism */
+    --card: 240 12% 8%;
+    --card-foreground: 180 100% 95%;
+
+    --popover: 240 15% 6%;
+    --popover-foreground: 180 100% 95%;
+
+    /* Primary quantum cyan theme */
+    --primary: 187 100% 50%;
+    --primary-foreground: 240 15% 4%;
+
+    /* Secondary with purple accent */
+    --secondary: 255 67% 68%;
+    --secondary-foreground: 240 15% 4%;
+
+    /* Muted holographic elements */
+    --muted: 240 10% 15%;
+    --muted-foreground: 180 20% 60%;
+
+    /* Accent magenta */
+    --accent: 320 100% 62%;
+    --accent-foreground: 240 15% 4%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 180 100% 95%;
+
+    /* Neon borders and inputs */
+    --border: 187 80% 30%;
+    --input: 240 12% 12%;
+    --ring: 187 100% 50%;
+
+    --radius: 0.75rem;
+
+    /* Glow effects */
+    --glow-cyan: 0 0 20px hsl(187 100% 50% / 0.5);
+    --glow-magenta: 0 0 20px hsl(320 100% 62% / 0.5);
+    --glow-purple: 0 0 20px hsl(255 67% 68% / 0.5);
+
+    /* Neon bloom for active elements */
+    --bloom-cyan: 0 0 30px hsl(187 100% 50% / 0.6), 0 0 60px hsl(187 100% 50% / 0.3);
+    --bloom-magenta: 0 0 30px hsl(320 100% 62% / 0.6), 0 0 60px hsl(320 100% 62% / 0.3);
+    --bloom-purple: 0 0 30px hsl(255 67% 68% / 0.6), 0 0 60px hsl(255 67% 68% / 0.3);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  /* Quantum tech mono font */
+  .font-quantum {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+  }
+
+  /* Holographic noise overlay */
+  .quantum-noise {
+    position: relative;
+  }
+
+  .quantum-noise::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.015'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Scanline effect */
+  .quantum-scanlines {
+    position: relative;
+  }
+
+  .quantum-scanlines::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 50%,
+      rgba(0, 229, 255, 0.02) 50%
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* Neon glow utilities */
+  .glow-cyan {
+    box-shadow: var(--glow-cyan);
+  }
+
+  .glow-magenta {
+    box-shadow: var(--glow-magenta);
+  }
+
+  .glow-purple {
+    box-shadow: var(--glow-purple);
+  }
+
+  /* Holographic panel */
+  .holo-panel {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--card) / 0.7) 0%,
+      hsl(var(--card) / 0.4) 100%
+    );
+    backdrop-filter: blur(20px);
+    border: 1px solid hsl(var(--border) / 0.3);
+    position: relative;
+  }
+
+  .holo-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      hsl(var(--quantum-cyan) / 0.4),
+      hsl(var(--quantum-purple) / 0.2),
+      hsl(var(--quantum-magenta) / 0.4)
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* Glitch animation */
+  @keyframes glitch {
+    0% {
+      transform: translate(0);
+    }
+    20% {
+      transform: translate(-2px, 2px);
+    }
+    40% {
+      transform: translate(-2px, -2px);
+    }
+    60% {
+      transform: translate(2px, 2px);
+    }
+    80% {
+      transform: translate(2px, -2px);
+    }
+    100% {
+      transform: translate(0);
+    }
+  }
+
+  .glitch-hover:hover {
+    animation: glitch 0.3s ease-in-out;
+  }
+
+  /* Quantum pulse */
+  @keyframes quantum-pulse {
+    0%, 100% {
+      opacity: 1;
+      box-shadow: 0 0 20px hsl(var(--primary) / 0.5);
+    }
+    50% {
+      opacity: 0.8;
+      box-shadow: 0 0 40px hsl(var(--primary) / 0.8);
+    }
+  }
+
+  .quantum-pulse {
+    animation: quantum-pulse 2s ease-in-out infinite;
+  }
+
+  /* Holographic shimmer */
+  @keyframes holo-shimmer {
+    0% {
+      background-position: -200% center;
+    }
+    100% {
+      background-position: 200% center;
+    }
+  }
+
+  .holo-shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(var(--quantum-cyan) / 0.1),
+      transparent
+    );
+    background-size: 200% 100%;
+    animation: holo-shimmer 3s ease-in-out infinite;
+  }
+
+  /* Chromatic aberration on hover */
+  .chromatic-hover {
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  .chromatic-hover:hover::before,
+  .chromatic-hover:hover::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.8;
+  }
+
+  .chromatic-hover:hover::before {
+    color: hsl(var(--quantum-cyan));
+    animation: chromatic-r 0.3s ease-in-out infinite;
+  }
+
+  .chromatic-hover:hover::after {
+    color: hsl(var(--quantum-magenta));
+    animation: chromatic-l 0.3s ease-in-out infinite;
+  }
+
+  @keyframes chromatic-r {
+    0%, 100% { transform: translate(0, 0); }
+    33% { transform: translate(1px, 0); }
+    66% { transform: translate(-1px, 0); }
+  }
+
+  @keyframes chromatic-l {
+    0%, 100% { transform: translate(0, 0); }
+    33% { transform: translate(-1px, 0); }
+    66% { transform: translate(1px, 0); }
+  }
+
+  /* Neon bloom for active elements */
+  .neon-bloom-cyan {
+    box-shadow: var(--bloom-cyan);
+    transition: box-shadow 0.3s ease;
+  }
+
+  .neon-bloom-magenta {
+    box-shadow: var(--bloom-magenta);
+    transition: box-shadow 0.3s ease;
+  }
+
+  .neon-bloom-purple {
+    box-shadow: var(--bloom-purple);
+    transition: box-shadow 0.3s ease;
+  }
+
+  /* Enhanced scanlines with higher fidelity */
+  .enhanced-scanlines {
+    position: relative;
+  }
+
+  .enhanced-scanlines::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      rgba(0, 229, 255, 0.015) 1px,
+      transparent 2px,
+      transparent 6px
+    );
+    pointer-events: none;
+    z-index: 2;
+    animation: scanline-move 12s linear infinite;
+  }
+
+  @keyframes scanline-move {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(4px); }
+  }
+
+  /* Particle aura */
+  .particle-aura {
+    position: relative;
+  }
+
+  .particle-aura::before {
+    content: '';
+    position: absolute;
+    inset: -100px;
+    background: radial-gradient(
+      circle at 50% 50%,
+      hsl(var(--quantum-cyan) / 0.15) 0%,
+      hsl(var(--quantum-purple) / 0.1) 30%,
+      hsl(var(--quantum-magenta) / 0.05) 50%,
+      transparent 70%
+    );
+    pointer-events: none;
+    z-index: -1;
+    filter: blur(40px);
+    animation: particle-pulse 4s ease-in-out infinite;
+  }
+
+  @keyframes particle-pulse {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.05); }
+  }
+
+  /* Focus visible for keyboard navigation */
+  *:focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  button:focus-visible,
+  a:focus-visible,
+  [role="button"]:focus-visible {
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.3);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
