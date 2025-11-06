@@ -1,73 +1,84 @@
-# Welcome to your Lovable project
+# Quantum Teleportation Experiment
 
-## Project info
+An interactive, educational visualization of quantum teleportation built with React and TypeScript. Experience quantum mechanics through a cinematic, 3D interface designed for learners at all levels.
 
-**URL**: https://lovable.dev/projects/689173da-35d0-4ae9-9471-8eba42843ce7
+## ✨ Features
 
-## How can I edit this code?
+- **Interactive 3D Visualization**: Real-time quantum state representation with particle effects
+- **Multi-Mode Experience**: 
+  - 🎓 **Guided Tour**: Step-by-step educational walkthrough
+  - 🔬 **Explorer Mode**: Free exploration of quantum concepts
+  - 🧪 **Researcher Mode**: Advanced controls and data analysis
+- **Timeline Control**: Navigate through the 7 phases of quantum teleportation
+- **Real Quantum Physics**: Proper implementation of complex quantum states, Bell pairs, and measurement
+- **Educational Tools**: Built-in glossary, legend, and contextual explanations
 
-There are several ways of editing your application.
+## Advanced Features
 
-**Use Lovable**
+✅ **3D Rotating Atoms** - Alice (red) and Bob (blue) with orbiting electrons  
+✅ **Animated Quantum Link** - Pulsing cyan connection when entangled  
+✅ **Interactive Controls** - Toggle entanglement, reset, teleport  
+✅ **Real-time Q# Integration** - Python backend calls Q# operations  
+✅ **Particle Effects** - Particles travel along the quantum link  
+✅ **State Visualization** - Display quantum states below each atom  
+✅ **Camera Controls** - Orbit, zoom, pan around the scene  
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/689173da-35d0-4ae9-9471-8eba42843ce7) and start prompting.
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🚀 Quick Start
 
-**Use your preferred IDE**
+```bash
+# Install dependencies
+npm install
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
+# Opens at http://localhost:8080
+
+# Build for production
+npm run build
 ```
 
-**Edit a file directly in GitHub**
+### Windows PowerShell Users
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+If you encounter execution policy issues, use:
+```powershell
+node ./node_modules/vite/bin/vite.js
+```
 
-**Use GitHub Codespaces**
+## 📚 Quantum Teleportation Process
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Experience all 7 phases of quantum teleportation:
 
-## What technologies are used for this project?
+1. **Setup** - Initialize qubits and quantum system
+2. **Entangle** - Create Bell pair between Alice and Bob
+3. **Prepare** - Set the message qubit state
+4. **Measure** - Alice performs Bell state measurement
+5. **Communicate** - Send classical bits via classical channel
+6. **Reconstruct** - Bob applies correction gates
+7. **Verify** - Confirm successful state teleportation
 
-This project is built with:
+## 🛠️ Tech Stack
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- **Frontend**: React 18 + TypeScript
+- **Build Tool**: Vite
+- **UI Framework**: shadcn/ui + Radix UI
+- **Styling**: Tailwind CSS with custom quantum theme
+- **State Management**: Zustand
+- **3D Visualization**: Ready for Three.js integration
+- **Physics**: Custom quantum mechanics implementation
 
-## How can I deploy this project?
+## 🎓 Educational Value
 
-Simply open [Lovable](https://lovable.dev/projects/689173da-35d0-4ae9-9471-8eba42843ce7) and click on Share -> Publish.
+Perfect for:
+- Physics students learning quantum mechanics
+- Educators demonstrating quantum concepts
+- Researchers exploring quantum teleportation
+- Anyone curious about quantum computing
 
-## Can I connect a custom domain to my Lovable project?
+## 📝 Development Status
 
-Yes, you can!
+This is an active educational project. More detailed documentation will be added upon completion.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+---
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+*Built with ❤️ for quantum education and exploration*

@@ -9,11 +9,9 @@ import { LiveDataPanel } from "@/components/LiveDataPanel";
 import { LegendPanel } from "@/components/LegendPanel";
 import { GlossaryPanel } from "@/components/GlossaryPanel";
 
-type Mode = "tour" | "explorer" | "researcher";
-
 const Index = () => {
   const [showApp, setShowApp] = useState(false);
-  const [currentMode, setCurrentMode] = useState<Mode>("tour");
+  const [currentMode, setCurrentMode] = useState("tour");
 
   if (showApp) {
     return (
@@ -25,13 +23,12 @@ const Index = () => {
             <div className="flex-1 flex flex-col p-6">
               <Stage3DPlaceholder />
             </div>
-            
             <LiveDataPanel />
           </div>
-          
+
           <TimelineController />
         </div>
-        
+
         {/* Floating Panels */}
         <LegendPanel />
         <GlossaryPanel />
@@ -47,11 +44,11 @@ const Index = () => {
           <div className="space-y-4">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full holo-panel">
               <Sparkles className="h-4 w-4 text-primary" />
-              <span className="font-quantum text-sm text-muted-foreground">
+              <span className="font-quantum text-sm text-muted-foreground hover:bg-primary/10 hover:border-primary px-8">
                 Quantum Computing Visualization
               </span>
             </div>
-            
+
             <h1 className="text-6xl md:text-7xl font-bold leading-tight">
               <span className="bg-gradient-to-r from-quantum-cyan via-quantum-purple to-quantum-magenta bg-clip-text text-transparent">
                 Quantum Teleportation,
@@ -59,7 +56,7 @@ const Index = () => {
               <br />
               <span className="text-foreground">Reimagined</span>
             </h1>
-            
+
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               A cinematic, interactive lab for every mind—from student to researcher.
               Experience quantum mechanics like never before.
@@ -80,7 +77,7 @@ const Index = () => {
               Start Guided Tour
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-            
+
             <Button
               size="lg"
               variant="outline"
@@ -93,7 +90,7 @@ const Index = () => {
               <Sparkles className="mr-2 h-5 w-5" />
               Open Explorer
             </Button>
-            
+
             <Button
               size="lg"
               variant="ghost"
@@ -134,7 +131,7 @@ const Index = () => {
                 key={feature.title}
                 className="holo-panel p-6 rounded-xl hover:scale-105 transition-transform cursor-pointer group"
               >
-                <div 
+                <div
                   className={`w-12 h-12 rounded-lg bg-${feature.color}/10 border border-${feature.color}/30 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
                 >
                   <feature.icon className={`h-6 w-6 text-${feature.color}`} />
