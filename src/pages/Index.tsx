@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { ArrowRight, BookOpen, Microscope, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { QuantumShell } from "@/components/QuantumShell";
@@ -8,15 +8,48 @@ import { TimelineController } from "@/components/TimelineController";
 import { LiveDataPanel } from "@/components/LiveDataPanel";
 import { LegendPanel } from "@/components/LegendPanel";
 import { GlossaryPanel } from "@/components/GlossaryPanel";
+import { StarsCanvas } from "@/components/stars-canvas";
+import { AnimatedBalls, BallControls } from "@/components/AnimatedBalls";
 
 const Index = () => {
   const [showApp, setShowApp] = useState(false);
   const [currentMode, setCurrentMode] = useState("tour");
+  const ballControlsRef = useRef<BallControls | null>(null);
+  const appBallControlsRef = useRef<BallControls | null>(null);
 
+  const moveBalls = () => {
+    if (ballControlsRef.current) {
+      ballControlsRef.current.moveBall1(-2, 2, 0);
+      ballControlsRef.current.moveBall2(2, -2, 0);
+    }
+  };
   if (showApp) {
     return (
       <QuantumShell>
-        <div className="flex flex-col h-screen">
+        {/* Stars background for app mode */}
+        <div className="fixed inset-0 -z-10">
+          <StarsCanvas 
+            transparent={true}
+            maxStars={1200}
+            hue={217}
+            brightness={1}
+            speedMultiplier={1}
+            twinkleIntensity={20}
+          />
+        </div>
+
+        {/* Animated Balls for app mode */}
+        <div className="fixed inset-0 z-[5] pointer-events-none">
+          <div className="w-full h-full opacity-40">
+            <AnimatedBalls 
+              onControlsReady={(controls) => {
+                appBallControlsRef.current = controls;
+              }}
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-col h-screen relative z-20">
           <CommandBar currentMode={currentMode} onModeChange={setCurrentMode} />
           
           <div className="flex flex-1 overflow-hidden">
@@ -38,7 +71,30 @@ const Index = () => {
 
   return (
     <QuantumShell>
-      <div className="min-h-screen flex items-center justify-center p-6">
+      {/* Stars background - behind everything */}
+      <div className="fixed inset-0 -z-10">
+        <StarsCanvas 
+          transparent={true}
+          maxStars={1200}
+          hue={217}
+          brightness={1}
+          speedMultiplier={1}
+          twinkleIntensity={20}
+        />
+      </div>
+
+      {/* 3D Animated Balls - positioned behind content but visible */}
+      <div className="fixed inset-0 z-[5] pointer-events-none">
+        <div className="w-full h-full opacity-60">
+          <AnimatedBalls 
+            onControlsReady={(controls) => {
+              ballControlsRef.current = controls;
+            }}
+          />
+        </div>
+      </div>
+
+      <div className="min-h-screen flex items-center justify-center p-6 relative z-20">
         <div className="max-w-4xl mx-auto text-center space-y-8 animate-fade-in">
           {/* Hero title */}
           <div className="space-y-4">
@@ -77,6 +133,16 @@ const Index = () => {
               Start Guided Tour
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
+            
+            <Button 
+              size="lg"
+              variant="outline"
+              onClick={moveBalls}
+              className="border-primary/50 hover:bg-primary/10 hover:border-primary px-8"
+            >
+              <Sparkles className="mr-2 h-5 w-5" />
+              Move Balls
+            </Button>
 
             <Button
               size="lg"
@@ -102,6 +168,19 @@ const Index = () => {
             >
               <Microscope className="mr-2 h-5 w-5" />
               Researcher Mode
+            </Button>
+          </div>
+              
+          {/* Move balls when a button is clicked */}
+          <div className="flex justify-center mt-4">
+            <Button 
+              onClick={() => {
+                ballControlsRef.current?.moveBall1(0, 3, 0);
+                ballControlsRef.current?.moveBall2(0, -3, 0);
+              }}
+              variant="outline"
+            >
+              Separate Balls
             </Button>
           </div>
 
@@ -146,21 +225,6 @@ const Index = () => {
             ))}
           </div>
 
-          {/* Quantum field animation */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden -z-10">
-            {[...Array(20)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute w-1 h-1 rounded-full bg-primary/30"
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  animation: `quantum-pulse ${2 + Math.random() * 3}s ease-in-out infinite`,
-                  animationDelay: `${Math.random() * 2}s`,
-                }}
-              />
-            ))}
-          </div>
         </div>
       </div>
     </QuantumShell>
@@ -168,3 +232,4 @@ const Index = () => {
 };
 
 export default Index;
+

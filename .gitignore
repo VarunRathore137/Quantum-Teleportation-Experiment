@@ -23,5 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 venv
-
+skewedrandombit.qs
 WARP.md
+superposition.qs
