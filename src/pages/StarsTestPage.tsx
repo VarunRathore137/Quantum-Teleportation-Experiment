@@ -1,27 +1,6 @@
-'use client';
 import { useEffect, useRef } from 'react';
 
-interface StarsCanvasProps {
-  transparent?: boolean;       // Background transparency
-  maxStars?: number;           // Total number of stars
-  hue?: number;                // Color hue for the stars
-  brightness?: number;         // Overall star brightness (0–1)
-  speedMultiplier?: number;    // Global animation speed multiplier
-  twinkleIntensity?: number;   // How often stars twinkle
-  className?: string;          // Custom class for the canvas
-  paused?: boolean;            // Pause animation toggle
-}
-
-export function StarsCanvas({
-  transparent = false,
-  maxStars = 1200,
-  hue = 217,
-  brightness = 1,
-  speedMultiplier = 1,
-  twinkleIntensity = 20,
-  className = '',
-  paused = false,
-}: StarsCanvasProps) {
+export function StarsTestPage() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const animationRef = useRef<number>();
 
@@ -43,8 +22,8 @@ export function StarsCanvas({
     const half = starTexture.width / 2;
     const gradient = ctx2.createRadialGradient(half, half, 0, half, half, half);
     gradient.addColorStop(0, '#ffffff');
-    gradient.addColorStop(0.1, `hsl(${hue}, 61%, 80%)`);
-    gradient.addColorStop(0.3, `hsl(${hue}, 64%, 40%)`);
+    gradient.addColorStop(0.2, 'rgba(255, 255, 255, 0.8)');
+    gradient.addColorStop(0.4, 'rgba(200, 220, 255, 0.4)');
     gradient.addColorStop(1, 'transparent');
     ctx2.fillStyle = gradient;
     ctx2.beginPath();
@@ -58,21 +37,19 @@ export function StarsCanvas({
 
     // --- Star class with 3D forward motion ---
     class Star {
-      x: number;           // X position in 3D space
-      y: number;           // Y position in 3D space
-      z: number;           // Z depth (distance from camera)
-      speed: number;       // Speed of movement
-      baseRadius: number;  // Base size of the star
-      alpha: number;       // Base opacity
+      x: number;
+      y: number;
+      z: number;
+      speed: number;
+      baseRadius: number;
 
       constructor() {
-        // Random starting position in 3D space (centered around origin)
+        // Random starting position in 3D space
         this.x = random(-w * 0.5, w * 0.5);
         this.y = random(-h * 0.5, h * 0.5);
         this.z = random(100, 2000); // Start at various depths
-        this.speed = random(0.5, 3) * speedMultiplier;
+        this.speed = random(0.5, 3);
         this.baseRadius = random(1, 3);
-        this.alpha = random(0.4, 1);
       }
 
       update() {
@@ -89,7 +66,7 @@ export function StarsCanvas({
 
       draw() {
         // Perspective projection
-        const perspective = 500; // Focal length
+        const perspective = 500;
         const scale = perspective / (perspective + this.z);
         
         // Project 3D position to 2D screen (center of screen is origin)
@@ -101,20 +78,11 @@ export function StarsCanvas({
         
         // Calculate opacity based on distance (closer = brighter)
         const distanceAlpha = Math.min(1, (2000 - this.z) / 1000);
-        ctx.globalAlpha = Math.min(1, this.alpha * distanceAlpha * brightness);
+        ctx.globalAlpha = distanceAlpha * 0.8;
 
-        // Twinkle effect
-        const twinkle = Math.floor(random(0, twinkleIntensity));
-        if (twinkle === 1 && this.alpha > 0.2) {
-          this.alpha -= 0.02;
-        } else if (twinkle === 2 && this.alpha < 1) {
-          this.alpha += 0.02;
-        }
-
-        // Draw the star if it's on screen and visible
+        // Draw the star if it's on screen
         if (screenX >= -radius && screenX <= w + radius && 
-            screenY >= -radius && screenY <= h + radius && 
-            radius > 0.5 && ctx.globalAlpha > 0.01) {
+            screenY >= -radius && screenY <= h + radius && radius > 0.5) {
           ctx.drawImage(
             starTexture, 
             screenX - radius / 2, 
@@ -127,17 +95,14 @@ export function StarsCanvas({
     }
 
     // Initialize stars
-    for (let i = 0; i < maxStars; i++) {
+    for (let i = 0; i < 500; i++) {
       stars.push(new Star());
     }
 
     // --- Animation loop ---
     const animate = () => {
-      if (paused) return; // Skip if paused
-
       // Clear canvas with subtle fade for trails
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.fillStyle = transparent ? 'rgba(0, 0, 0, 0.05)' : 'rgba(0, 0, 0, 0.1)';
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
       ctx.fillRect(0, 0, w, h);
 
       // Update and draw stars
@@ -165,13 +130,30 @@ export function StarsCanvas({
       }
       window.removeEventListener('resize', handleResize);
     };
-  }, [transparent, maxStars, hue, brightness, speedMultiplier, twinkleIntensity, paused]);
+  }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className={`fixed top-0 left-0 w-full h-full ${className}`}
-      style={{ display: 'block' }}
-    />
+    <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: '#000', zIndex: 1 }}>
+      <canvas
+        ref={canvasRef}
+        style={{ display: 'block', width: '100%', height: '100%' }}
+      />
+      <div style={{ 
+        position: 'absolute', 
+        top: 20, 
+        left: 20, 
+        color: 'white', 
+        fontFamily: 'monospace',
+        zIndex: 10,
+        background: 'rgba(0,0,0,0.5)',
+        padding: '10px',
+        borderRadius: '5px'
+      }}>
+        <h2>Stars Test - Forward Motion</h2>
+        <p>You should see stars moving toward you (getting bigger and brighter)</p>
+        <p>If you see stars, the implementation is working!</p>
+      </div>
+    </div>
   );
 }
+

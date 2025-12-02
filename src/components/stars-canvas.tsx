@@ -16,7 +16,7 @@ export function StarsCanvas({
   transparent = false,
   maxStars = 1200,
   hue = 217,
-  brightness = 10,
+  brightness = 1,
   speedMultiplier = 1,
   twinkleIntensity = 20,
   className = '',
@@ -29,97 +29,121 @@ export function StarsCanvas({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d')!;
+    const ctx = canvas.getContext('2d', { alpha: true })!;
     let w = (canvas.width = window.innerWidth);
     let h = (canvas.height = window.innerHeight);
 
     let stars: Star[] = [];
-    let count = 0;
 
-    // --- Cached gradient texture ---
-    const canvas2 = document.createElement('canvas');
-    const ctx2 = canvas2.getContext('2d')!;
-    canvas2.width = 100;
-    canvas2.height = 100;
-    const half = canvas2.width / 2;
-    const gradient2 = ctx2.createRadialGradient(half, half, 0, half, half, half);
-    gradient2.addColorStop(0.025, '#fff');
-    gradient2.addColorStop(0.1, `hsl(${hue}, 61%, 33%)`);
-    gradient2.addColorStop(0.25, `hsl(${hue}, 64%, 6%)`);
-    gradient2.addColorStop(1, 'transparent');
-    ctx2.fillStyle = gradient2;
+    // --- Cached gradient texture for stars ---
+    const starTexture = document.createElement('canvas');
+    const ctx2 = starTexture.getContext('2d')!;
+    starTexture.width = 100;
+    starTexture.height = 100;
+    const half = starTexture.width / 2;
+    const gradient = ctx2.createRadialGradient(half, half, 0, half, half, half);
+    gradient.addColorStop(0, '#ffffff');
+    gradient.addColorStop(0.1, `hsl(${hue}, 61%, 80%)`);
+    gradient.addColorStop(0.3, `hsl(${hue}, 64%, 40%)`);
+    gradient.addColorStop(1, 'transparent');
+    ctx2.fillStyle = gradient;
     ctx2.beginPath();
     ctx2.arc(half, half, half, 0, Math.PI * 2);
     ctx2.fill();
 
-    // --- Utility functions ---
-    const random = (min: number, max?: number) => {
-      if (max === undefined) {
-        max = min;
-        min = 0;
-      }
-      if (min > max) [min, max] = [max, min];
-      return Math.floor(Math.random() * (max - min + 1)) + min;
+    // --- Utility function ---
+    const random = (min: number, max: number) => {
+      return Math.random() * (max - min) + min;
     };
 
-    const maxOrbit = (x: number, y: number) => {
-      const max = Math.max(x, y);
-      const diameter = Math.round(Math.sqrt(max * max + max * max));
-      return diameter / 2;
-    };
-
-    // --- Star class ---
+    // --- Star class with 3D forward motion ---
     class Star {
-      orbitRadius: number;
-      radius: number;
-      orbitX: number;
-      orbitY: number;
-      timePassed: number;
-      speed: number;
-      alpha: number;
+      x: number;           // X position in 3D space
+      y: number;           // Y position in 3D space
+      z: number;           // Z depth (distance from camera)
+      speed: number;       // Speed of movement
+      baseRadius: number;  // Base size of the star
+      alpha: number;       // Base opacity
 
       constructor() {
-        this.orbitRadius = random(maxOrbit(w, h));
-        this.radius = random(60, this.orbitRadius) / 12;
-        this.orbitX = w / 2;
-        this.orbitY = h / 2;
-        this.timePassed = random(0, maxStars);
-        this.speed = (random(this.orbitRadius) / 50000) * speedMultiplier;
-        this.alpha = (random(2, 10) / 10) * brightness;
-        count++;
-        stars[count] = this;
+        // Random starting position in 3D space (centered around origin)
+        this.x = random(-w * 0.5, w * 0.5);
+        this.y = random(-h * 0.5, h * 0.5);
+        this.z = random(100, 2000); // Start at various depths
+        this.speed = random(0.5, 3) * speedMultiplier;
+        this.baseRadius = random(1, 3);
+        this.alpha = random(0.4, 1);
+      }
+
+      update() {
+        // Move star forward (toward camera, decreasing Z)
+        this.z -= this.speed;
+
+        // Reset star when it gets too close (passes camera)
+        if (this.z <= 0) {
+          this.x = random(-w * 0.5, w * 0.5);
+          this.y = random(-h * 0.5, h * 0.5);
+          this.z = 2000; // Reset to far distance
+        }
       }
 
       draw() {
-        const x = Math.sin(this.timePassed) * this.orbitRadius + this.orbitX;
-        const y = Math.cos(this.timePassed) * this.orbitRadius + this.orbitY;
-        const twinkle = random(twinkleIntensity);
+        // Perspective projection
+        const perspective = 500; // Focal length
+        const scale = perspective / (perspective + this.z);
+        
+        // Project 3D position to 2D screen (center of screen is origin)
+        const screenX = (this.x * scale) + w / 2;
+        const screenY = (this.y * scale) + h / 2;
+        
+        // Scale star size based on distance (closer = bigger)
+        const radius = this.baseRadius * scale * 5;
+        
+        // Calculate opacity based on distance (closer = brighter)
+        const distanceAlpha = Math.min(1, (2000 - this.z) / 1000);
+        ctx.globalAlpha = Math.min(1, this.alpha * distanceAlpha * brightness);
 
-        if (twinkle === 1 && this.alpha > 0) {
-          this.alpha -= 0.05;
+        // Twinkle effect
+        const twinkle = Math.floor(random(0, twinkleIntensity));
+        if (twinkle === 1 && this.alpha > 0.2) {
+          this.alpha -= 0.02;
         } else if (twinkle === 2 && this.alpha < 1) {
-          this.alpha += 0.05;
+          this.alpha += 0.02;
         }
 
-        ctx.globalAlpha = this.alpha;
-        ctx.drawImage(canvas2, x - this.radius / 2, y - this.radius / 2, this.radius, this.radius);
-        this.timePassed += this.speed;
+        // Draw the star if it's on screen and visible
+        if (screenX >= -radius && screenX <= w + radius && 
+            screenY >= -radius && screenY <= h + radius && 
+            radius > 0.5 && ctx.globalAlpha > 0.01) {
+          ctx.drawImage(
+            starTexture, 
+            screenX - radius / 2, 
+            screenY - radius / 2, 
+            radius, 
+            radius
+          );
+        }
       }
     }
 
-    for (let i = 0; i < maxStars; i++) new Star();
+    // Initialize stars
+    for (let i = 0; i < maxStars; i++) {
+      stars.push(new Star());
+    }
 
     // --- Animation loop ---
     const animate = () => {
       if (paused) return; // Skip if paused
 
+      // Clear canvas with subtle fade for trails
       ctx.globalCompositeOperation = 'source-over';
-      ctx.globalAlpha = 0.8;
-      ctx.fillStyle = transparent ? 'hsla(217, 64%, 6%, 0)' : 'hsla(217, 64%, 6%, 1)';
+      ctx.fillStyle = transparent ? 'rgba(0, 0, 0, 0.05)' : 'rgba(0, 0, 0, 0.1)';
       ctx.fillRect(0, 0, w, h);
 
+      // Update and draw stars
       ctx.globalCompositeOperation = 'lighter';
-      for (let i = 1; i < stars.length; i++) {
+      for (let i = 0; i < stars.length; i++) {
+        stars[i].update();
         stars[i].draw();
       }
 
@@ -136,7 +160,9 @@ export function StarsCanvas({
 
     window.addEventListener('resize', handleResize);
     return () => {
-      cancelAnimationFrame(animationRef.current!);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
       window.removeEventListener('resize', handleResize);
     };
   }, [transparent, maxStars, hue, brightness, speedMultiplier, twinkleIntensity, paused]);

@@ -10,6 +10,7 @@ import { LegendPanel } from "@/components/LegendPanel";
 import { GlossaryPanel } from "@/components/GlossaryPanel";
 import { StarsCanvas } from "@/components/stars-canvas";
 import { AnimatedBalls, BallControls } from "@/components/AnimatedBalls";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 const Index = () => {
   const [showApp, setShowApp] = useState(false);
@@ -28,30 +29,34 @@ const Index = () => {
       <QuantumShell>
         {/* Stars background for app mode */}
         <div className="fixed inset-0 -z-10">
-          <StarsCanvas 
-            transparent={true}
-            maxStars={1200}
-            hue={217}
-            brightness={1}
-            speedMultiplier={1}
-            twinkleIntensity={20}
-          />
+          <ErrorBoundary name="StarsCanvas">
+            <StarsCanvas
+              transparent={true}
+              maxStars={1200}
+              hue={217}
+              brightness={1.5}
+              speedMultiplier={1}
+              twinkleIntensity={20}
+            />
+          </ErrorBoundary>
         </div>
 
         {/* Animated Balls for app mode */}
         <div className="fixed inset-0 z-[5] pointer-events-none">
           <div className="w-full h-full opacity-40">
-            <AnimatedBalls 
-              onControlsReady={(controls) => {
-                appBallControlsRef.current = controls;
-              }}
-            />
+            <ErrorBoundary name="AnimatedBalls">
+              <AnimatedBalls
+                onControlsReady={(controls) => {
+                  appBallControlsRef.current = controls;
+                }}
+              />
+            </ErrorBoundary>
           </div>
         </div>
 
         <div className="flex flex-col h-screen relative z-20">
           <CommandBar currentMode={currentMode} onModeChange={setCurrentMode} />
-          
+
           <div className="flex flex-1 overflow-hidden">
             <div className="flex-1 flex flex-col p-6">
               <Stage3DPlaceholder />
@@ -73,24 +78,28 @@ const Index = () => {
     <QuantumShell>
       {/* Stars background - behind everything */}
       <div className="fixed inset-0 -z-10">
-        <StarsCanvas 
-          transparent={true}
-          maxStars={1200}
-          hue={217}
-          brightness={1}
-          speedMultiplier={1}
-          twinkleIntensity={20}
-        />
+        <ErrorBoundary name="StarsCanvas">
+          <StarsCanvas
+            transparent={true}
+            maxStars={1200}
+            hue={217}
+            brightness={5}
+            speedMultiplier={1}
+            twinkleIntensity={20}
+          />
+        </ErrorBoundary>
       </div>
 
       {/* 3D Animated Balls - positioned behind content but visible */}
       <div className="fixed inset-0 z-[5] pointer-events-none">
         <div className="w-full h-full opacity-60">
-          <AnimatedBalls 
-            onControlsReady={(controls) => {
-              ballControlsRef.current = controls;
-            }}
-          />
+          <ErrorBoundary name="AnimatedBalls">
+            <AnimatedBalls
+              onControlsReady={(controls) => {
+                ballControlsRef.current = controls;
+              }}
+            />
+          </ErrorBoundary>
         </div>
       </div>
 
@@ -133,8 +142,8 @@ const Index = () => {
               Start Guided Tour
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-            
-            <Button 
+
+            <Button
               size="lg"
               variant="outline"
               onClick={moveBalls}
@@ -170,10 +179,10 @@ const Index = () => {
               Researcher Mode
             </Button>
           </div>
-              
+
           {/* Move balls when a button is clicked */}
           <div className="flex justify-center mt-4">
-            <Button 
+            <Button
               onClick={() => {
                 ballControlsRef.current?.moveBall1(0, 3, 0);
                 ballControlsRef.current?.moveBall2(0, -3, 0);
@@ -232,4 +241,3 @@ const Index = () => {
 };
 
 export default Index;
-
