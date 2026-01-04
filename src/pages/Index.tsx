@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowRight, BookOpen, Microscope, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { QuantumShell } from "@/components/QuantumShell";
@@ -8,6 +8,7 @@ import { TimelineController } from "@/components/TimelineController";
 import { LiveDataPanel } from "@/components/LiveDataPanel";
 import { LegendPanel } from "@/components/LegendPanel";
 import { GlossaryPanel } from "@/components/GlossaryPanel";
+import { useTeleportationStore } from "@/state/teleportationStore";
 
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -15,6 +16,15 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 const Index = () => {
   const [showApp, setShowApp] = useState(false);
   const [currentMode, setCurrentMode] = useState("tour");
+
+  const setTourMode = useTeleportationStore((state) => state.setTourMode);
+  const reset = useTeleportationStore((state) => state.reset);
+
+  // Sync tour mode with current mode selection
+  useEffect(() => {
+    setTourMode(currentMode === "tour");
+    reset();
+  }, [currentMode, setTourMode, reset]);
 
   if (showApp) {
     return (

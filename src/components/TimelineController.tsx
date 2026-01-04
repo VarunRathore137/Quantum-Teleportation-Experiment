@@ -1,22 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Play, Pause, SkipBack, SkipForward, RotateCcw } from "lucide-react";
 import { Button } from "./ui/button";
 import { Slider } from "./ui/slider";
+import { useTeleportationStore, TeleportationPhase } from "@/state/teleportationStore";
 
 const TIMELINE_PHASES = [
   { id: "setup", label: "Setup", position: 0 },
-  { id: "entangle", label: "Entangle", position: 0.15 },
-  { id: "prepare", label: "Prepare", position: 0.3 },
-  { id: "measure", label: "Measure", position: 0.5 },
-  { id: "communicate", label: "Communicate", position: 0.65 },
-  { id: "reconstruct", label: "Reconstruct", position: 0.8 },
-  { id: "verify", label: "Verify", position: 1 },
+  { id: "hadamard_applied", label: "Hadamard", position: 0.15 },
+  { id: "alice_bob_entangled", label: "Entangle A-B", position: 0.3 },
+  { id: "message_appears", label: "Message", position: 0.45 },
+  { id: "message_alice_entangled", label: "Entangle M-A", position: 0.6 },
+  { id: "ready_to_measure", label: "Ready", position: 0.75 },
+  { id: "result_shown", label: "Result", position: 1 },
 ];
 
 export const TimelineController = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState([0]);
   const [speed, setSpeed] = useState(1);
+
+  const timelinePosition = useTeleportationStore((state) => state.timelinePosition);
+  const jumpToPhase = useTeleportationStore((state) => state.jumpToPhase);
+  const reset = useTeleportationStore((state) => state.reset);
+
+  // Sync progress from store
+  useEffect(() => {
+    setProgress([timelinePosition]);
+  }, [timelinePosition]);
 
   const SNAP_THRESHOLD = 0.03; // Magnetic snap within 3%
 
@@ -30,7 +40,9 @@ export const TimelineController = () => {
       (p) => p.position >= progress[0]
     );
     if (currentPhaseIndex > 0) {
-      setProgress([TIMELINE_PHASES[currentPhaseIndex - 1].position]);
+      const targetPhase = TIMELINE_PHASES[currentPhaseIndex - 1];
+      setProgress([targetPhase.position]);
+      jumpToPhase(targetPhase.id as TeleportationPhase);
     }
   };
 
@@ -39,23 +51,26 @@ export const TimelineController = () => {
       (p) => p.position >= progress[0]
     );
     if (currentPhaseIndex < TIMELINE_PHASES.length - 1) {
-      setProgress([TIMELINE_PHASES[currentPhaseIndex + 1].position]);
+      const targetPhase = TIMELINE_PHASES[currentPhaseIndex + 1];
+      setProgress([targetPhase.position]);
+      jumpToPhase(targetPhase.id as TeleportationPhase);
     }
   };
 
   const handleReset = () => {
     setProgress([0]);
     setIsPlaying(false);
+    reset();
   };
 
   const handleProgressChange = (value: number[]) => {
     const newProgress = value[0];
-    
+
     // Magnetic snapping to keyframes
     const nearestPhase = TIMELINE_PHASES.find(
       (phase) => Math.abs(phase.position - newProgress) < SNAP_THRESHOLD
     );
-    
+
     if (nearestPhase) {
       setProgress([nearestPhase.position]);
     } else {
@@ -79,7 +94,7 @@ export const TimelineController = () => {
               >
                 {/* Marker dot */}
                 <div className="w-3 h-3 rounded-full bg-primary border-2 border-background shadow-lg shadow-primary/50 group-hover:scale-150 transition-transform" />
-                
+
                 {/* Label */}
                 <div className="absolute top-6 left-1/2 -translate-x-1/2 whitespace-nowrap">
                   <span className="font-quantum text-xs text-muted-foreground group-hover:text-primary transition-colors">
@@ -114,7 +129,7 @@ export const TimelineController = () => {
             >
               <RotateCcw className="h-4 w-4" />
             </Button>
-            
+
             <Button
               variant="ghost"
               size="icon"
@@ -124,7 +139,7 @@ export const TimelineController = () => {
             >
               <SkipBack className="h-4 w-4" />
             </Button>
-            
+
             <Button
               size="icon"
               onClick={handlePlayPause}
@@ -138,7 +153,7 @@ export const TimelineController = () => {
                 <Play className="h-4 w-4 ml-0.5" />
               )}
             </Button>
-            
+
             <Button
               variant="ghost"
               size="icon"

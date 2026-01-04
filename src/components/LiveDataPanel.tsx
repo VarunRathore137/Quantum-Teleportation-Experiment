@@ -1,31 +1,32 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Activity, Gauge, Binary, GitBranch } from "lucide-react";
+import { useTeleportationStore } from "@/state/teleportationStore";
 
 export const LiveDataPanel = () => {
   return (
-    <div 
+    <div
       className="w-96 holo-panel border-l border-border/30 backdrop-blur-xl"
       role="complementary"
       aria-label="Live data panel"
     >
       <Tabs defaultValue="states" className="h-full flex flex-col">
         <TabsList className="w-full justify-start border-b border-border/30 bg-transparent rounded-none p-0">
-          <TabsTrigger 
-            value="states" 
+          <TabsTrigger
+            value="states"
             className="data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:neon-bloom-cyan border-b-2 border-transparent data-[state=active]:border-primary rounded-none"
           >
             <Activity className="h-4 w-4 mr-2" />
             Qubit States
           </TabsTrigger>
-          <TabsTrigger 
+          <TabsTrigger
             value="circuit"
             className="data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:neon-bloom-cyan border-b-2 border-transparent data-[state=active]:border-primary rounded-none"
           >
             <GitBranch className="h-4 w-4 mr-2" />
             Circuit
           </TabsTrigger>
-          <TabsTrigger 
+          <TabsTrigger
             value="probability"
             className="data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:neon-bloom-cyan border-b-2 border-transparent data-[state=active]:border-primary rounded-none"
           >
@@ -38,11 +39,11 @@ export const LiveDataPanel = () => {
           <TabsContent value="states" className="mt-0">
             <QubitStatesView />
           </TabsContent>
-          
+
           <TabsContent value="circuit" className="mt-0">
             <CircuitView />
           </TabsContent>
-          
+
           <TabsContent value="probability" className="mt-0">
             <ProbabilityView />
           </TabsContent>
@@ -53,21 +54,55 @@ export const LiveDataPanel = () => {
 };
 
 const QubitStatesView = () => {
+  const storeQubits = useTeleportationStore((state) => state.qubits);
+  const phase = useTeleportationStore((state) => state.phase);
+
   const qubits = [
-    { id: "A", label: "Message", state: "|0⟩", amplitude: [1, 0] },
-    { id: "B", label: "Alice", state: "|Φ+⟩", amplitude: [0.707, 0.707] },
-    { id: "C", label: "Bob", state: "|Φ+⟩", amplitude: [0.707, 0.707] },
-  ];
+    {
+      id: storeQubits.message.id,
+      label: storeQubits.message.label,
+      state: storeQubits.message.state,
+      amplitude: storeQubits.message.amplitude,
+      color: storeQubits.message.color,
+      visible: storeQubits.message.visible,
+    },
+    {
+      id: storeQubits.alice.id,
+      label: storeQubits.alice.label,
+      state: storeQubits.alice.state,
+      amplitude: storeQubits.alice.amplitude,
+      color: storeQubits.alice.color,
+      visible: true,
+    },
+    {
+      id: storeQubits.bob.id,
+      label: storeQubits.bob.label,
+      state: storeQubits.bob.state,
+      amplitude: storeQubits.bob.amplitude,
+      color: storeQubits.bob.color,
+      visible: true,
+    },
+  ].filter(q => q.visible);
 
   return (
     <div className="space-y-4">
       <h3 className="font-quantum text-sm text-muted-foreground mb-4">Live Qubit States</h3>
-      
+      <div className="text-xs text-muted-foreground mb-2">
+        Phase: <span className="text-primary">{phase.replace(/_/g, ' ')}</span>
+      </div>
+
       {qubits.map((qubit) => (
         <div key={qubit.id} className="holo-panel p-4 rounded-lg space-y-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/50 flex items-center justify-center font-quantum text-sm text-primary">
+              <div
+                className="w-8 h-8 rounded-full border flex items-center justify-center font-quantum text-sm"
+                style={{
+                  backgroundColor: `${qubit.color}20`,
+                  borderColor: `${qubit.color}80`,
+                  color: qubit.color,
+                }}
+              >
                 {qubit.id}
               </div>
               <div>
@@ -75,24 +110,42 @@ const QubitStatesView = () => {
                 <div className="font-quantum text-xs text-muted-foreground">{qubit.state}</div>
               </div>
             </div>
-            
+
             {/* Bloch sphere thumbnail placeholder */}
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-quantum-cyan/20 to-quantum-purple/20 border border-primary/30" />
+            <div
+              className="w-12 h-12 rounded-full border"
+              style={{
+                background: `linear-gradient(135deg, ${qubit.color}30, ${qubit.color}10)`,
+                borderColor: `${qubit.color}50`,
+              }}
+            />
           </div>
 
           {/* Amplitude visualization */}
           <div className="flex gap-2 mt-3">
-            <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-gradient-to-r from-quantum-cyan to-quantum-purple"
-                style={{ width: `${qubit.amplitude[0] * 100}%` }}
-              />
+            <div className="flex-1">
+              <div className="text-[10px] text-muted-foreground mb-1">|0⟩: {(qubit.amplitude[0] * 100).toFixed(1)}%</div>
+              <div className="h-2 bg-muted rounded-full overflow-hidden">
+                <div
+                  className="h-full transition-all duration-500"
+                  style={{
+                    width: `${qubit.amplitude[0] * 100}%`,
+                    background: `linear-gradient(90deg, ${qubit.color}, ${qubit.color}80)`,
+                  }}
+                />
+              </div>
             </div>
-            <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-gradient-to-r from-quantum-purple to-quantum-magenta"
-                style={{ width: `${qubit.amplitude[1] * 100}%` }}
-              />
+            <div className="flex-1">
+              <div className="text-[10px] text-muted-foreground mb-1">|1⟩: {(qubit.amplitude[1] * 100).toFixed(1)}%</div>
+              <div className="h-2 bg-muted rounded-full overflow-hidden">
+                <div
+                  className="h-full transition-all duration-500"
+                  style={{
+                    width: `${qubit.amplitude[1] * 100}%`,
+                    background: `linear-gradient(90deg, ${qubit.color}80, ${qubit.color})`,
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -105,7 +158,7 @@ const CircuitView = () => {
   return (
     <div className="space-y-4">
       <h3 className="font-quantum text-sm text-muted-foreground mb-4">Quantum Circuit</h3>
-      
+
       {/* Circuit placeholder */}
       <div className="holo-panel p-6 rounded-lg min-h-[300px] flex items-center justify-center">
         <div className="text-center space-y-2">
@@ -133,7 +186,7 @@ const ProbabilityView = () => {
   return (
     <div className="space-y-4">
       <h3 className="font-quantum text-sm text-muted-foreground mb-4">Measurement Probabilities</h3>
-      
+
       {/* Radial meter */}
       <div className="holo-panel p-6 rounded-lg">
         <div className="relative w-48 h-48 mx-auto">
@@ -143,7 +196,7 @@ const ProbabilityView = () => {
               const circumference = 2 * Math.PI * 40;
               const strokeDashoffset = circumference * (1 - outcome.probability);
               const strokeDasharray = `${circumference * outcome.probability} ${circumference}`;
-              
+
               return (
                 <circle
                   key={outcome.state}
@@ -160,7 +213,7 @@ const ProbabilityView = () => {
               );
             })}
           </svg>
-          
+
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center">
               <div className="text-2xl font-bold font-quantum text-primary">100%</div>
@@ -175,7 +228,7 @@ const ProbabilityView = () => {
         {outcomes.map((outcome) => (
           <div key={outcome.state} className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors">
             <div className="flex items-center gap-3">
-              <div 
+              <div
                 className="w-3 h-3 rounded-full"
                 style={{ backgroundColor: `hsl(var(--${outcome.color}))` }}
               />
