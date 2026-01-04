@@ -1,0 +1,267 @@
+/**
+ * CircuitCanvas.css
+ * Styles for circuit canvas (right panel with droppable grid)
+ */
+
+.circuit-canvas {
+  flex: 1;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.circuit-canvas h2 {
+  margin: 0 0 15px 0;
+  font-size: 1.3rem;
+  color: #333;
+  border-bottom: 2px solid #667eea;
+  padding-bottom: 10px;
+}
+
+.circuit-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 6px;
+  min-height: 300px;
+}
+
+/* QUBIT ROW */
+.qubit-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.qubit-label {
+  flex: 0 0 50px;
+  font-weight: 700;
+  color: #333;
+  text-align: right;
+  font-size: 0.95rem;
+}
+
+/* QUBIT LINE (horizontal wire) */
+.qubit-line {
+  flex: 1;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 10px;
+  background: white;
+  border-radius: 4px;
+  min-height: 60px;
+  position: relative;
+}
+
+.qubit-line::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  right: 0;
+  height: 1px;
+  background: #ddd;
+  z-index: 1;
+}
+
+/* CIRCUIT CELL (drop zone) */
+.circuit-cell {
+  flex: 0 0 50px;
+  height: 50px;
+  background: white;
+  border: 2px dashed #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+.circuit-cell:hover {
+  border-color: #999;
+  background: #f0f0f0;
+}
+
+.circuit-cell.can-drop {
+  border-color: #667eea;
+  background: rgba(102, 126, 234, 0.05);
+}
+
+.circuit-cell.over {
+  border-color: #00ff00;
+  background: rgba(0, 255, 0, 0.1);
+  box-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
+}
+
+.circuit-cell.no-drop {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.circuit-cell.occupied {
+  background: #f5f5f5;
+  border-color: #999;
+  cursor: default;
+}
+
+.drop-indicator {
+  font-size: 1.2rem;
+  color: #00ff00;
+  font-weight: 700;
+  animation: bounce 0.6s infinite;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* GATE BOX */
+.gate-box {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  border: none;
+}
+
+.gate-box:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+}
+
+.gate-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.gate-angle {
+  font-size: 0.65rem;
+  margin-top: 2px;
+  opacity: 0.9;
+}
+
+.gate-remove-btn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.2s;
+}
+
+.gate-box:hover .gate-remove-btn {
+  opacity: 1;
+}
+
+.gate-remove-btn:hover {
+  background: #ff5252;
+  transform: scale(1.2);
+}
+
+/* MEASURE MARKER */
+.measure-marker {
+  flex: 0 0 auto;
+  padding: 0 10px;
+  font-size: 0.9rem;
+  color: #999;
+  font-weight: 600;
+}
+
+/* CIRCUIT INFO */
+.circuit-info {
+  margin-top: 15px;
+  padding: 12px 15px;
+  background: #f0f0f0;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.circuit-info p {
+  margin: 0;
+}
+
+.circuit-info strong {
+  color: #333;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .circuit-container {
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .qubit-row {
+    gap: 10px;
+  }
+
+  .circuit-cell,
+  .gate-box {
+    flex: 0 0 45px;
+    height: 45px;
+  }
+
+  .gate-label {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .circuit-canvas {
+    padding: 10px;
+  }
+
+  .circuit-container {
+    min-height: auto;
+  }
+
+  .qubit-line {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .circuit-cell,
+  .gate-box {
+    flex: 0 0 40px;
+    height: 40px;
+    font-size: 0.75rem;
+  }
+}

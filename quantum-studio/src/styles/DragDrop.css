@@ -1,0 +1,80 @@
+/**
+ * DragDrop.css
+ * Global drag-drop styles and animations
+ */
+
+/* DRAG STATE */
+.dragging {
+  opacity: 0.5 !important;
+  cursor: grabbing !important;
+}
+
+/* DROP ZONE HIGHLIGHTS */
+.drop-target-active {
+  background-color: rgba(0, 255, 0, 0.1);
+  border: 2px dashed green;
+}
+
+.drop-target-invalid {
+  background-color: rgba(255, 0, 0, 0.1);
+  border: 2px dashed red;
+}
+
+/* DRAG PREVIEW */
+.drag-preview {
+  opacity: 0.7;
+  background: white;
+  border: 2px solid #667eea;
+  border-radius: 6px;
+  padding: 8px 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(102, 126, 234, 0);
+  }
+}
+
+.drag-drop-active {
+  animation: pulse 2s infinite;
+}
+
+/* SMOOTH TRANSITIONS */
+* {
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.circuit-cell,
+.gate-box,
+.gate-palette-item {
+  transition: all 0.2s ease;
+}

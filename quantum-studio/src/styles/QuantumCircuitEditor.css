@@ -1,0 +1,135 @@
+/**
+ * UPDATED: QuantumCircuitEditor.css
+ * Added styles for drag-drop layout
+ */
+
+.quantum-circuit-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f5f5f5;
+}
+
+.editor-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.editor-header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.header-buttons button {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.header-buttons button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.header-buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-danger {
+  background: #ff6b6b !important;
+  border-color: #ff6b6b !important;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #ff5252 !important;
+}
+
+/* MESSAGE DISPLAY */
+.message {
+  padding: 12px 20px;
+  margin: 0;
+  font-weight: 600;
+  text-align: center;
+}
+
+.error-message {
+  background: #ffebee;
+  color: #c62828;
+  border-bottom: 2px solid #ff6b6b;
+}
+
+.success-message {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-bottom: 2px solid #4caf50;
+}
+
+/* MAIN LAYOUT */
+.editor-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  gap: 0;
+}
+
+/* FOOTER */
+.editor-footer {
+  background: white;
+  padding: 15px 20px;
+  border-top: 1px solid #ddd;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.editor-footer h3 {
+  margin: 0 0 5px 0;
+  color: #333;
+}
+
+.editor-footer p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .editor-header {
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .editor-layout {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+  .editor-header {
+    padding: 15px;
+  }
+
+  .editor-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .header-buttons button {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+  }
+}
