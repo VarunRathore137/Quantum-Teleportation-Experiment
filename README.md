@@ -1,6 +1,7 @@
 # Quantum Teleportation Experiment
 
 An interactive, educational visualization of quantum teleportation built with React and TypeScript. Experience quantum mechanics through a cinematic, 3D interface designed for learners at all levels.
+Explore it here: https://quantum-teleportation-experiment.vercel.app/
 
 ## ✨ Features
 
